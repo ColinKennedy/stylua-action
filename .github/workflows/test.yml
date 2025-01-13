@@ -60,7 +60,7 @@ jobs:
         with:
           version: latest
           token: ${{ secrets.GITHUB_TOKEN }}
-          args: false
+          args: ./test
 
       - name: Confirm test file was not changed
         run: |
