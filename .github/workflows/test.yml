@@ -3,8 +3,9 @@ on: # rebuild any PRs and main branch changes
   pull_request:
   push:
     branches:
-      - main
       - 'releases/*'
+      - main
+      - remove_exec_test_002
 
 jobs:
   build: # make sure build/ci work properly
@@ -45,3 +46,22 @@ jobs:
           version: latest
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --check ./test
+  # only install / cache the StyLua install, don't run it
+  smoketest_args_false:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy Test File
+        run: |
+          cp ./test/needs_spaces.lua{,.copy}
+
+      - uses: ./
+        with:
+          version: latest
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: false
+
+      - name: Confirm test file was not changed
+        run: |
+          cmp ./test/needs_spaces.lua{,.copy}
